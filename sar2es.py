@@ -16,10 +16,7 @@ time data line
 ignore lines starting with "Average"
 """
 from __future__ import print_function
-from datetime import datetime
-from pprint import pprint
-from os import environ
-import sys
+from time import strftime
 import re
 import fileinput
 import json
@@ -49,21 +46,21 @@ class SarDataParser:
                 if self.metrics_header[1] in ["BUS", "FAN", "TEMP"]:
                     return
                 for metric_record in self.metrics_data:
-                    timestamp_str = self.metrics_info[0][3]+" "+metric_record[0]
-                    #timestamp = datetime.strptime(timestamp_str, "%d-%m-%Y %H:%M:%S")
-                    #timestamp_int = long(timestamp.strftime('%s'))
+                    time_zone = strftime("%z")
+                    date = self.metrics_info[0][3]
+                    timestamp_str = date+"T"+metric_record[0]
                     metrics = {}
                     for i in range(base_index, len(self.metrics_header)):
                         metrics[self.metrics_header[i]] = float(metric_record[i].replace(',', '.'))
                     json_record = {
                         'hostname': self.metrics_info[0][2],
-                        'date': timestamp_str,
+                        'timestamp': timestamp_str,
                         'name': metric_name,
-                        'component' : metric_record[1],
+                        'component': metric_record[1],
                         'metrics': metrics
                     }
                     print('{ "index":  { "_index": "sar", "_type": "_doc" }}')
-                    print(json.dumps(json_record, ensure_ascii=False, sort_keys=True))
+                    print(json.dumps(json_record, ensure_ascii=True, sort_keys=True))
             self.metrics_header = None
             self.metrics_data = []
         elif self.metrics_info is None:
@@ -73,17 +70,14 @@ class SarDataParser:
         else:
             self.metrics_data.append(line.split())
 
-    def pprint_result(self):
-        pprint(self.data_dict)
-
 
 def main():
-    environ['LANG'] = 'C'
     parser = SarDataParser()
     for line in fileinput.input():
         line = line.strip("\r\n")
         parser.process(line)
     print("")   # EOF for ES bulk processing
+
 
 if __name__ == "__main__":
     main()
