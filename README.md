@@ -10,8 +10,8 @@ elasticsearch-6.2.2/bin/elasticsearch
 Opern a terminal window to download/install/start Kibana
 ```sh
 cd ~/performance
-tar xvf kibana-6.2.2-linux-x86_64.tar.gz
 wget https://artifacts.elastic.co/downloads/kibana/kibana-6.2.2-linux-x86_64.tar.gz
+tar xvf kibana-6.2.2-linux-x86_64.tar.gz
 kibana-6.2.2-linux-x86_64/bin/kibana
 ```
 
