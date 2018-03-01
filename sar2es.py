@@ -15,12 +15,9 @@ time data line
 ...
 ignore lines starting with "Average"
 """
-from __future__ import print_function
-from time import strftime
-import re
-import fileinput
-import json
 
+import sys
+import re
 
 class SarDataParser:
 
@@ -43,11 +40,12 @@ class SarDataParser:
                     metric_name = self.metrics_header[1]
                     base_index = 2
                 # Ignore this types of data
-                if self.metrics_header[1] in ["BUS", "FAN", "TEMP"]:
+                if self.metrics_header[1] in ["INTR", "BUS", "FAN", "TEMP"]:
+                    self.metrics_header = None
+                    self.metrics_data = []
                     return
                 metric_name = metric_name.lower()
                 for metric_record in self.metrics_data:
-                    time_zone = strftime("%z")
                     date = self.metrics_info[0][3]
                     timestamp_str = date+"T"+metric_record[0]
                     metrics = {}
@@ -60,8 +58,15 @@ class SarDataParser:
                         'component': metric_record[1]
                     }
                     json_record.update(metrics)
-                    print('{ "index":  { "_index": "sar_%s", "_type": "_doc" }}' % metric_name)
-                    print(json.dumps(json_record, ensure_ascii=True, sort_keys=True))
+
+                    json_items = []
+                    for key, value in json_record.iteritems():
+                        if isinstance(value, basestring):
+                            value = '"%s"' % value
+                        json_items.append('"%s": %s' % (key, value))
+                    json_str = '{%s}' % ', '.join(json_items)
+                    print('{"index": {"_index": "sar_%s", "_type": "_doc" }}' % metric_name)
+                    print(json_str)
             self.metrics_header = None
             self.metrics_data = []
         elif self.metrics_info is None:
@@ -74,7 +79,7 @@ class SarDataParser:
 
 def main():
     parser = SarDataParser()
-    for line in fileinput.input():
+    for line in sys.stdin.readlines():
         line = line.strip("\r\n")
         parser.process(line)
     print("")   # EOF for ES bulk processing
