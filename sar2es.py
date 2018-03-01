@@ -45,6 +45,7 @@ class SarDataParser:
                 # Ignore this types of data
                 if self.metrics_header[1] in ["BUS", "FAN", "TEMP"]:
                     return
+                metric_name = metric_name.lower()
                 for metric_record in self.metrics_data:
                     time_zone = strftime("%z")
                     date = self.metrics_info[0][3]
@@ -55,11 +56,11 @@ class SarDataParser:
                     json_record = {
                         'hostname': self.metrics_info[0][2],
                         'timestamp': timestamp_str,
-                        'name': metric_name,
-                        'component': metric_record[1],
-                        'metrics': metrics
+                        #'name': metric_name,
+                        'component': metric_record[1]
                     }
-                    print('{ "index":  { "_index": "sar", "_type": "_doc" }}')
+                    json_record.update(metrics)
+                    print('{ "index":  { "_index": "sar_%s", "_type": "_doc" }}' % metric_name)
                     print(json.dumps(json_record, ensure_ascii=True, sort_keys=True))
             self.metrics_header = None
             self.metrics_data = []
