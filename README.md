@@ -7,7 +7,7 @@ tar xvf elasticsearch-6.2.2.tar.gz
 elasticsearch-6.2.2/bin/elasticsearch
 ```
 
-Opern a terminal window to download/install/start Kibana
+Open a terminal window to download/install/start Kibana
 ```sh
 cd ~/performance
 wget https://artifacts.elastic.co/downloads/kibana/kibana-6.2.2-linux-x86_64.tar.gz
@@ -23,7 +23,7 @@ cd sar2es
 sh -v collect_local_stats.sh
 ```
 
-Open Kibana in  browser window at http://localhost:5601
+Open Kibana in a browser window at http://localhost:5601
 
 - Management -> Index Patterns -> Index pattern: sar* -> Next step
 - Select "timestamp" for the Time Filter field name -> Create index pattern
