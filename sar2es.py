@@ -18,6 +18,32 @@ ignore lines starting with "Average"
 
 import sys
 import re
+import subprocess
+import time
+from optparse import OptionParser
+
+
+def command_line_parser():
+    parser = OptionParser()
+    parser.add_option("-i", "--interval", dest="interval", default="1",
+                    help="set interval between data collections (seconds)", metavar="interval")
+    parser.add_option("-s", "--sampling-time", dest="sampling_time", default="1",
+                    help="sampling time for sar data collection", metavar="sampling_time")
+    parser.add_option("-c", "--count", dest="count", default="1",
+                    help="number of samples to collect", metavar="count")
+    parser.add_option("-d", "--debug",
+                    action="store_false", dest="debug", default=False,
+                    help="print debug messages")
+
+    (options, args) = parser.parse_args()
+    return options, args
+
+
+def get_status_output(command):
+    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+    out, _ = process.communicate()
+    return (process.returncode, out)
+
 
 class SarDataParser:
 
@@ -78,12 +104,21 @@ class SarDataParser:
 
 
 def main():
-    parser = SarDataParser()
-    for line in sys.stdin.readlines():
-        line = line.strip("\r\n")
-        parser.process(line)
-    print("")   # EOF for ES bulk processing
-
+    (options, args) = command_line_parser()
+    count = int(options.count)
+    interval = int(options.interval)
+    while count > 0:
+        rc, output = get_status_output("sar -A %s 1" % options.sampling_time)
+        if rc != 0:
+            print("Error invoking sar -A 1 1")
+            sys.exit(1)
+        parser = SarDataParser()
+        for line in output.splitlines():
+            line = line.strip("\r\n")
+            parser.process(line)
+        print("")   # EOF for ES bulk processing
+        count -= 1
+        time.sleep(interval)
 
 if __name__ == "__main__":
     main()
