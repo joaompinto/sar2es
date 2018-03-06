@@ -1,0 +1,106 @@
+[
+  {
+    "_id": "948125c0-2167-11e8-9d9f-73bd1e8a564a",
+    "_type": "dashboard",
+    "_source": {
+      "title": "System Performance",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"gridData\":{\"h\":3,\"i\":\"1\",\"w\":6,\"x\":0,\"y\":0},\"id\":\"9e8f33a0-2152-11e8-afa5-0738b1e07177\",\"panelIndex\":\"1\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"gridData\":{\"h\":3,\"i\":\"3\",\"w\":6,\"x\":0,\"y\":3},\"id\":\"fdd33350-214f-11e8-afa5-0738b1e07177\",\"panelIndex\":\"3\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"gridData\":{\"h\":3,\"i\":\"4\",\"w\":6,\"x\":6,\"y\":0},\"id\":\"160de2c0-214c-11e8-afa5-0738b1e07177\",\"panelIndex\":\"4\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"gridData\":{\"h\":3,\"i\":\"5\",\"w\":6,\"x\":6,\"y\":3},\"id\":\"aa25f070-2155-11e8-afa5-0738b1e07177\",\"panelIndex\":\"5\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"gridData\":{\"h\":3,\"i\":\"6\",\"w\":6,\"x\":0,\"y\":6},\"id\":\"f6f477f0-215a-11e8-afa5-0738b1e07177\",\"panelIndex\":\"6\",\"type\":\"visualization\",\"version\":\"6.2.2\"}]",
+      "optionsJSON": "{\"darkTheme\":true,\"hidePanelTitles\":true,\"useMargins\":true}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[],\"highlightAll\":true,\"version\":true}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "aa25f070-2155-11e8-afa5-0738b1e07177",
+    "_type": "visualization",
+    "_source": {
+      "title": "System Disk IO",
+      "visState": "{\"title\":\"System Disk IO\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=sar*, q='hostname: * AND metric_name: system', metric=avg:rtps).if(eq, 0, null, .es(index=sar*, q='hostname: * AND metric_name: system', metric=avg:rtps).fit(average)).label('Reads/s'),\\n.es(index=sar*, q='hostname: * AND metric_name: system', metric=avg:wtps).if(eq, 0, null, .es(index=sar*, q='hostname: * AND metric_name: system', metric=avg:wtps).fit(average)).label('Writes/s').title(\\\"Disk I/O over time\\\")\",\"interval\":\"auto\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "9e8f33a0-2152-11e8-afa5-0738b1e07177",
+    "_type": "visualization",
+    "_source": {
+      "title": "System CPU",
+      "visState": "{\"title\":\"System CPU\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=sar*, q='hostname: * AND metric_name: CPU AND component: all', metric=avg:%usr).bars(width=10).label(\\\"%usr\\\").color(\\\"#00FF00\\\"),\\n.es(index=sar*, q='hostname: * AND metric_name: CPU AND component: all', metric=avg:%system).bars(width=10).label(\\\"%System\\\").color(\\\"#0000FF\\\"),\\n.es(index=sar*, q='hostname: * AND metric_name: CPU AND component: all', metric=avg:%iowait).bars(width=10).label(\\\"%IOWait\\\").color(\\\"#FF0000\\\")\\n.title(\\\"CPU over time\\\")\",\"interval\":\"auto\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "160de2c0-214c-11e8-afa5-0738b1e07177",
+    "_type": "visualization",
+    "_source": {
+      "title": "System Swaping",
+      "visState": "{\"title\":\"System Swaping\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=sar*, metric=avg:pswpin/s).if(eq, 0, null, .es(metric=avg:pswpin/s)).bars(width=10).label(\\\"Swap In\\\").color(\\\"#FF0000\\\"),\\n.es(index=sar*, metric=avg:pswpout/s).if(eq, 0, null, .es(metric=avg:pswpout/s)).bars().label(\\\"Swap Out\\\").color(\\\"#AA0000\\\").title('Memory swaping activity over time')\",\"interval\":\"auto\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "f6f477f0-215a-11e8-afa5-0738b1e07177",
+    "_type": "visualization",
+    "_source": {
+      "title": "System Disk IO Top5",
+      "visState": "{\"title\":\"System Disk IO Top5\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=sar*,  q='hostname: * AND metric_name: DEV', metric=avg:tps, split=component.keyword:5).bars(width=10).label(\\\"dev [$1]\\\", \\\"^.* > component.keyword:(\\\\S+) > .*\\\").title('Top 5 Disks')\",\"interval\":\"auto\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "fdd33350-214f-11e8-afa5-0738b1e07177",
+    "_type": "visualization",
+    "_source": {
+      "title": "System Network",
+      "visState": "{\"title\":\"System Network\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=sar*,  metric=avg:rxkB/s).if(eq, 0, null, .es( metric=avg:rxkB/s).fit(average)).label('readKB/s') , .es(index=sar*,  metric=avg:txkB/s).if(eq, 0, null, .es( metric=avg:txkB/s).fit(average)).label('writeKB/s').title('Network activity over time')\",\"interval\":\"auto\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  }
+]

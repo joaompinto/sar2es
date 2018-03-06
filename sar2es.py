@@ -28,18 +28,16 @@ from time import strftime
 def command_line_parser():
     parser = OptionParser()
     parser.add_option("-c", "--count", dest="count", default="1",
-                    help="number of samples to collect", metavar="count")
+                      help="number of samples to collect", metavar="count")
     parser.add_option("-d", "--debug",
-                    action="store_true", dest="debug", default=False,
-                    help="print debug messages")
+                      action="store_true", dest="debug", default=False,
+                      help="print debug messages")
     parser.add_option("-e", "--elasticsearch-url", dest="es_url", default="http://localhost:9200",
-                    help="elastic search url for data upload", metavar="es_url")
+                      help="elastic search url for data upload", metavar="es_url")
     parser.add_option("-m", "--max-time", dest="max_time", default="3",
-                    help="max time to wait for elasticsearch upload", metavar="max_time")
+                      help="max time to wait for elasticsearch upload", metavar="max_time")
     parser.add_option("-i", "--interval", dest="interval", default="1",
-                    help="set interval between data collections (seconds)", metavar="interval")
-    parser.add_option("-s", "--sampling-time", dest="sampling_time", default="1",
-                    help="sampling time for sar data collection", metavar="sampling_time")
+                      help="set interval between data collections (seconds)", metavar="interval")
 
     (options, args) = parser.parse_args()
     return options, args
@@ -49,7 +47,8 @@ def get_status_output(command, input=None):
     input_handler = None
     if input is not None:
         input_handler = subprocess.PIPE
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=input_handler)
+    process = subprocess.Popen(command,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=input_handler)
 
     out, err = process.communicate(input=input)
     return (process.returncode, out, err)
@@ -76,7 +75,7 @@ class SarDataParser:
                 else:
                     metric_name = self.metrics_header[1]
                     base_index = 2
-                # Ignore this types of data
+                # Ignore this type of data
                 if self.metrics_header[1] in ["INTR", "BUS", "FAN", "TEMP"]:
                     self.metrics_header = None
                     self.metrics_data = []
@@ -122,20 +121,27 @@ def main():
     (options, args) = command_line_parser()
     count = int(options.count)
     interval = int(options.interval)
+    count_str = "infinite" if count == -1 else str(count)
+    status_msg = "Collecting system activity counters, %s iterations" % count_str
+    status_msg += ", every %s second(s)" % options.interval
+    max_time = int(options.max_time)
+    print(status_msg)
     while count > 0 or count == -1:
-        cmd = ["sar", "-pA", options.sampling_time, "1"]
+        cmd = ["sar", "-pA", options.interval, "1"]
         if options.debug:
             print(cmd)
-        rc, output,err = get_status_output(cmd)
+        rc, output, err = get_status_output(cmd)
         if rc != 0:
-            print("Error invoking sar -A 1 1")
+            print("Error invoking sar")
             print(err)
             sys.exit(1)
         parser = SarDataParser()
         for line in output.splitlines():
             line = line.strip("\r\n")
             parser.process(line)
-        cmd = ["curl", "-km3", "-X", "POST", "-H", "Content-Type: application/json", "--data-binary", "@-", "%s/_doc/_bulk" % options.es_url]
+        cmd = ["curl", "-km%d" % max_time,
+               "-X", "POST", "-H", "Content-Type: application/json",
+               "--data-binary", "@-", "%s/_doc/_bulk" % options.es_url]
         if options.debug:
             print(parser.json)
             print(cmd)
@@ -149,6 +155,7 @@ def main():
             count -= 1
         if count > 0 or count == -1:
             time.sleep(interval)
+
 
 if __name__ == "__main__":
     main()

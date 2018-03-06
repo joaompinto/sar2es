@@ -20,18 +20,14 @@ Open a terminal window to download/run sar2es:
 cd ~/performance
 git clone https://github.com/joaompinto/sar2es.git
 cd sar2es
-sh -v collect_local_stats.sh
+./sar2es.py -c -1 -i 5
 ```
 
-Open Kibana in a browser window at http://localhost:5601
+Open Kibana in a browser window at http://localhost:5601, setup the dashboard:
 
-- Management -> Index Patterns -> Index pattern: sar* -> Next step
-- Select "timestamp" for the Time Filter field name -> Create index pattern
-- Discover -> Add a filter -> name is CPU -> Save
-- Discover -> Add a filter -> component is all -> Save
-- Visualize -> + Create a visualization -> Visual Builder
-- Click "Panel options" -> Time field -> Selec timestamp
-- Click "Data" -> change Aggregation to "Average" -> change filed to "metric.%usr"
-- Click "Auto-refresh" -> 5seconds
+- Management -> Index Patterns -> In the "Index pattern" field, type: sar* -> Next step
+- Select "@timestamp" for the Time Filter field name -> Create index pattern
+- Management -> Saved Objects -> Import -> Select "kibana_sar_dashboard.json" -> Yes, overwrite
+- Dashboard -> System Performance
 
 
