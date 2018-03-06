@@ -1,0 +1,72 @@
+[
+  {
+    "_id": "160de2c0-214c-11e8-afa5-0738b1e07177",
+    "_type": "visualization",
+    "_source": {
+      "title": "System_Swaping",
+      "visState": "{\"title\":\"System_Swaping\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=sar*, metric=avg:pswpin/s).if(eq, 0, null, .es(metric=avg:pswpin/s)).bars(width=40).label(\\\"Swap In\\\").color(\\\"#FF0000\\\"),\\n.es(index=sar*, metric=avg:pswpout/s).if(eq, 0, null, .es(metric=avg:pswpout/s)).bars(width=40).label(\\\"Swap Out\\\").color(\\\"#AA0000\\\").title('Memory paging activity')\",\"interval\":\"auto\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    }
+  },
+  {
+    "_id": "9e8f33a0-2152-11e8-afa5-0738b1e07177",
+    "_type": "visualization",
+    "_source": {
+      "title": "System_CPU",
+      "visState": "{\"title\":\"System_CPU\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=sar*, q='hostname: * AND metric_name: CPU AND component: all', metric=avg:%user).bars(width=40).label(\\\"%User\\\").color(\\\"#00FF00\\\"),\\n.es(index=sar*, q='hostname: * AND metric_name: CPU AND component: all', metric=avg:%system).bars(width=40).label(\\\"%System\\\").color(\\\"#0000FF\\\"),\\n.es(index=sar*, q='hostname: * AND metric_name: CPU AND component: all', metric=avg:%iowait).bars(width=40).label(\\\"%IOWait\\\").color(\\\"#FF0000\\\")\\n.title(\\\"CPU over time\\\")\",\"interval\":\"auto\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    }
+  },
+  {
+    "_id": "aa25f070-2155-11e8-afa5-0738b1e07177",
+    "_type": "visualization",
+    "_source": {
+      "title": "System_Disk_IO",
+      "visState": "{\"title\":\"System_Disk_IO\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=sar*, q='hostname: * AND metric_name: system', metric=avg:rtps).if(eq, 0, null, .es(index=sar*, q='hostname: * AND metric_name: system', metric=avg:rtps).fit(average)).label('Reads/s'),\\n.es(index=sar*, q='hostname: * AND metric_name: system', metric=avg:wtps).if(eq, 0, null, .es(index=sar*, q='hostname: * AND metric_name: system', metric=avg:wtps).fit(average)).label('Writes/s').title(\\\"Disk I/O\\\")\",\"interval\":\"auto\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    }
+  },
+  {
+    "_id": "f6f477f0-215a-11e8-afa5-0738b1e07177",
+    "_type": "visualization",
+    "_source": {
+      "title": "System_Disk_IO_Top5",
+      "visState": "{\"title\":\"System_Disk_IO_Top5\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=sar*,  q='hostname: * AND metric_name: DEV', metric=avg:tps, split=component.keyword:5).bars(width=40).label(\\\"dev [$1]\\\", \\\"^.* > component.keyword:(\\\\S+) > .*\\\").title('Top 5 Disks')\",\"interval\":\"auto\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    }
+  },
+  {
+    "_id": "fdd33350-214f-11e8-afa5-0738b1e07177",
+    "_type": "visualization",
+    "_source": {
+      "title": "System_Net",
+      "visState": "{\"title\":\"System_Net\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=sar*,  metric=avg:rxbyt/s).if(eq, 0, null, .es( metric=avg:rxbyt/s).fit(average)).label('readKBs/s') , .es(index=sar*,  metric=avg:txbyt/s).if(eq, 0, null, .es( metric=avg:txbyt/s).fit(average)).label('writeKB/s').title('Network activity over time')\",\"interval\":\"auto\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    }
+  }
+]
