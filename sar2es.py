@@ -118,6 +118,7 @@ def main():
     # Setup locale settings to get standard date/time formats
     os.environ['S_TIME_FORMAT'] = 'ISO'
     os.environ['LANG'] = 'C'
+    os.environ['TZ'] = 'UTC'
     (options, args) = command_line_parser()
     count = int(options.count)
     interval = int(options.interval)
